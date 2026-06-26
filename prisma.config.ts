@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { defineConfig, env } from "prisma/config";
+import { defineConfig } from "prisma/config";
 
 export default defineConfig({
   schema: "prisma/schema.prisma",
@@ -7,7 +7,9 @@ export default defineConfig({
     path: "prisma/migrations",
   },
   datasource: {
-    url: env("DATABASE_URL"),
-    directUrl: env("DIRECT_URL"),
+    // Use process.env so `prisma generate` succeeds during Vercel install
+    // even when DATABASE_URL / DIRECT_URL are not yet available.
+    url: process.env.DIRECT_URL ?? process.env.DATABASE_URL ?? "",
+    directUrl: process.env.DIRECT_URL ?? process.env.DATABASE_URL ?? "",
   },
 });

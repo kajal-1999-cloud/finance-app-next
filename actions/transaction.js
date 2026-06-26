@@ -7,8 +7,6 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import aj from "@/lib/arcjet";
 import { request } from "@arcjet/next";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
 const serializeAmount = (obj) => ({
   ...obj,
   amount: obj.amount.toNumber(),
@@ -230,6 +228,11 @@ export async function getUserTransactions(query = {}) {
 // Scan Receipt
 export async function scanReceipt(file) {
   try {
+    if (!process.env.GEMINI_API_KEY) {
+      throw new Error("GEMINI_API_KEY is not configured");
+    }
+
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ model: "gemini-3.1-flash-lite" });  
     // const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" }); // for stable version 
 
